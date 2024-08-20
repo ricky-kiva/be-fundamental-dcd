@@ -1,139 +1,109 @@
 'use strict';
 
-const { nanoid } = require('nanoid');
-const notes = require('./notes');
-
-const postNote = (req, h) => {
-  const { title = 'untitled', tags, body } = req.payload;
-
-  const id = nanoid(16);
-  const createdAt = new Date().toISOString();
-  const updatedAt = createdAt;
-
-  const newNote = {
-    title, tags, body, id, createdAt, updatedAt
-  };
-
-  notes.push(newNote);
-
-  const isSuccess = notes
-    .filter((note) => note.id === id)
-    .length > 0;
-
-  if (isSuccess) {
-    const response = h.response({
-      status: 'success',
-      message: 'Note successfully added!',
-      data: { noteId: id }
-    });
-
-    response.code(201);
-    return response;
+class NotesHandler {
+  constructor(service) {
+    this._service = service;
   }
 
-  const response = h.response({
-    status: 'fail',
-    message: 'Catatan gagal ditambahkan'
-  });
+  postNoteHandler(req, h) {
+    try {
+      const { title = 'untitled', body, tags } = req.payload;
 
-  response.code(500);
+      const noteId = this._service.addNote({ title, body, tags });
 
-  return response;
-};
+      const res = h.response({
+        status: 'success',
+        message: 'Note successfully added!',
+        data: { noteId }
+      });
 
-const getNotes = () => ({
-  status: 'success',
-  data: { notes }
-});
+      res.code(201);
 
-const getNoteById = (req, h) => {
-  const { id } = req.params;
+      return res;
+    } catch (err) {
+      const res = h.response({
+        status: 'fail',
+        message: err.message
+      });
 
-  const note = notes.filter((n) => n.id === id)[0];
+      res.code(400);
 
-  if (note !== undefined) {
+      return res;
+    }
+  }
+
+  getNotesHandler() {
+    const notes = this._service.getNotes();
+
     return {
       status: 'success',
-      data: { note }
+      data: { notes }
     };
   }
 
-  const response = h.response({
-    status: 'fail',
-    message: 'Note not found'
-  });
+  getNoteByIdHandler(req, h) {
+    try {
+      const { id } = req.params;
+      const note = this._service.getNoteById(id);
 
-  response.code(404);
+      return h.response({
+        status: 'success',
+        data: { note }
+      });
+    } catch (err) {
+      const res = h.response({
+        status: 'fail',
+        message: err.message
+      });
 
-  return response;
-};
+      res.code(404);
 
-const putNoteById = (req, h) => {
-  const { id } = req.params;
-
-  const { title, tags, body } = req.payload;
-  const updatedAt = new Date().toISOString();
-
-  const index = notes.findIndex((n) => n.id === id);
-
-  if (index !== -1) {
-    notes[index] = {
-      ...notes[index],
-      title,
-      tags,
-      body,
-      updatedAt
-    };
-
-    const response = h.response({
-      status: 'success',
-      message: 'Note successfully updated'
-    });
-
-    response.code(200);
-    return response;
+      return res;
+    }
   }
 
-  const response = h.response({
-    status: 'fail',
-    message: 'Failed to update the note. Note id is not found'
-  });
+  putNoteByIdHandler(req, h) {
+    try {
+      const { id } = req.params;
+      this._service.editNoteById(id, req.payload);
 
-  response.code(404);
+      return {
+        status: 'success',
+        message: 'Note successfully updated'
+      };
+    } catch (err) {
+      const res = h.response({
+        status: 'fail',
+        message: err.message
+      });
 
-  return response;
-};
+      res.code(404);
 
-const deleteNoteById = (req, h) => {
-  const { id } = req.params;
-
-  const index = notes.find((n) => n.id === id);
-
-  if (index !== -1) {
-    notes.splice(index, 1);
-    const response = h.response({
-      status: 'success',
-      message: 'Note successfully deleted'
-    });
-
-    response.code(200);
-    return response;
+      return res;
+    }
   }
 
-  const response = h.response({
-    status: 'fail',
-    message: 'Failed to delete note. Note id is not found'
-  });
+  deleteNoteByIdHandler(req, h) {
+    try {
+      const { id } = req.params;
 
-  response.code(404);
+      this._service.deleteNoteById(id);
 
-  return response;
-};
+      return {
+        status: 'success',
+        message: 'Note successfully deleted'
+      };
+    } catch (err) {
+      const res = h.response({
+        status: 'fail',
+        message: err.message
+      });
 
-module.exports = {
-  postNote,
-  getNotes,
-  getNoteById,
-  putNoteById,
-  deleteNoteById
-};
+      res.code(404);
+
+      return res;
+    }
+  }
+}
+
+module.exports = NotesHandler;
