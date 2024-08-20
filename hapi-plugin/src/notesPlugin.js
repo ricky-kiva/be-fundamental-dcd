@@ -1,8 +1,10 @@
+'use strict';
+
 module.exports = {
   name: 'notes',
   version: '1.0.0',
   register: async (server, options) => {
-    const notes = options.notes // receive passed option
+    const notes = options.notes; // receive passed option
     server.route(
       [
         {
@@ -11,6 +13,6 @@ module.exports = {
           handler: () => notes
         }
       ]
-    )
+    );
   }
-}
+};
