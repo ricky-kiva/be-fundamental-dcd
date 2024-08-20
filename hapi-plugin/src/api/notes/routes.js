@@ -1,34 +1,26 @@
 'use strict';
 
-const {
-  deleteNoteByIdHandler,
-  editNoteByIdHandler,
-  getNoteByIdHandler,
-  addNoteHandler,
-  getAllNotesHandler
-} = require('./handler');
-
-const routes = [
+const routes = (h) => [
   {
     method: 'POST',
     path: '/notes',
-    handler: addNoteHandler
+    handler: h.postNote
   }, {
     method: 'GET',
     path: '/notes',
-    handler: getAllNotesHandler
+    handler: h.getNotes
   }, {
     method: 'GET',
     path: '/notes/{id}',
-    handler: getNoteByIdHandler
+    handler: h.getNoteById
   }, {
     method: 'PUT',
     path: '/notes/{id}',
-    handler: editNoteByIdHandler
+    handler: h.editNoteById
   }, {
     method: 'DELETE',
     path: '/notes/{id}',
-    handler: deleteNoteByIdHandler
+    handler: h.deleteNoteById
   }
 ];
 

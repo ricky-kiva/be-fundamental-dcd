@@ -3,7 +3,7 @@
 const { nanoid } = require('nanoid');
 const notes = require('./notes');
 
-const addNoteHandler = (req, h) => {
+const postNote = (req, h) => {
   const { title = 'untitled', tags, body } = req.payload;
 
   const id = nanoid(16);
@@ -41,12 +41,12 @@ const addNoteHandler = (req, h) => {
   return response;
 };
 
-const getAllNotesHandler = () => ({
+const getNotes = () => ({
   status: 'success',
   data: { notes }
 });
 
-const getNoteByIdHandler = (req, h) => {
+const getNoteById = (req, h) => {
   const { id } = req.params;
 
   const note = notes.filter((n) => n.id === id)[0];
@@ -68,7 +68,7 @@ const getNoteByIdHandler = (req, h) => {
   return response;
 };
 
-const editNoteByIdHandler = (req, h) => {
+const putNoteById = (req, h) => {
   const { id } = req.params;
 
   const { title, tags, body } = req.payload;
@@ -104,7 +104,7 @@ const editNoteByIdHandler = (req, h) => {
   return response;
 };
 
-const deleteNoteByIdHandler = (req, h) => {
+const deleteNoteById = (req, h) => {
   const { id } = req.params;
 
   const index = notes.find((n) => n.id === id);
@@ -131,9 +131,9 @@ const deleteNoteByIdHandler = (req, h) => {
 };
 
 module.exports = {
-  addNoteHandler,
-  getAllNotesHandler,
-  getNoteByIdHandler,
-  editNoteByIdHandler,
-  deleteNoteByIdHandler
+  postNote,
+  getNotes,
+  getNoteById,
+  putNoteById,
+  deleteNoteById
 };
