@@ -19,6 +19,8 @@ const init = async () => {
   server.route(routes);
 
   await server.start();
+
+  // eslint-disable-next-line no-console
   console.log(`Server is running on ${server.info.uri}`);
 };
 
