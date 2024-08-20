@@ -4,23 +4,23 @@ const routes = (h) => [
   {
     method: 'POST',
     path: '/notes',
-    handler: h.postNote
+    handler: h.postNoteHandler
   }, {
     method: 'GET',
     path: '/notes',
-    handler: h.getNotes
+    handler: h.getNotesHandler
   }, {
     method: 'GET',
     path: '/notes/{id}',
-    handler: h.getNoteById
+    handler: h.getNoteByIdHandler
   }, {
     method: 'PUT',
     path: '/notes/{id}',
-    handler: h.editNoteById
+    handler: h.putNoteByIdHandler
   }, {
     method: 'DELETE',
     path: '/notes/{id}',
-    handler: h.deleteNoteById
+    handler: h.deleteNoteByIdHandler
   }
 ];
 
