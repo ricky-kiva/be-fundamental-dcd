@@ -35,7 +35,7 @@ class NotesService {
     const note = this._notes.filter((n) => n.id === id)[0];
 
     if (!note) {
-      throw new Error('Note is not found');
+      throw new Error('Note not found');
     }
 
     return note;
@@ -45,7 +45,7 @@ class NotesService {
     const index = this._notes.findIndex((n) => n.id === id);
 
     if (index === -1) {
-      throw new Error('Failed to update note. Note is not found');
+      throw new Error('Failed to update the note. Note id is not found');
     }
 
     const updatedAt = new Date().toISOString();
@@ -63,7 +63,7 @@ class NotesService {
     const index = this._notes.findIndex((n) => n.id === id);
 
     if (index === -1) {
-      throw new Error('Failed to delete note. note is not found');
+      throw new Error('Failed to delete note. Note id is not found');
     }
 
     this._notes.splice(index, 1);
