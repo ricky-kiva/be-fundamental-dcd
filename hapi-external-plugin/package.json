@@ -1,0 +1,17 @@
+{
+  "name": "hapi-external-plugin",
+  "version": "1.0.0",
+  "description": "Using Hapi with external plugin",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Rickyslash",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/hapi": "^21.3.10",
+    "@hapi/vision": "^7.0.3",
+    "handlebars": "^4.7.8"
+  }
+}
