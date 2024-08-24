@@ -1,7 +1,9 @@
 const products = require("./products");
 
 class ProductsHandler {
-  constructor() {
+  constructor(validator) {
+    this._validator = validator
+
     this.postProductHandler = this.postProductHandler.bind(this);
     this.getProductsHandler = this.getProductsHandler.bind(this);
   }
@@ -24,6 +26,8 @@ class ProductsHandler {
 
   async getProductsHandler(request, h) {
     const { name = '' } = request.query;
+
+    await this._validator.validateQuery({ name })
 
     if (name !== '') {
       const product = products.filter((product) => product.name === name);
