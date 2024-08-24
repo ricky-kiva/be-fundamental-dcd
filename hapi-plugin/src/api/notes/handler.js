@@ -1,8 +1,9 @@
 'use strict';
 
 class NotesHandler {
-  constructor(service) {
+  constructor(service, validator) {
     this._service = service;
+    this._validator = validator;
 
     this.postNoteHandler = this.postNoteHandler.bind(this);
     this.getNotesHandler = this.getNotesHandler.bind(this);
@@ -13,6 +14,8 @@ class NotesHandler {
 
   postNoteHandler(req, h) {
     try {
+      this._validator.validateNotePayload(req.payload);
+
       const { title = 'untitled', body, tags } = req.payload;
 
       const noteId = this._service.addNote({ title, body, tags });
@@ -70,6 +73,8 @@ class NotesHandler {
 
   putNoteByIdHandler(req, h) {
     try {
+      this._validator.validateNotePayload(req.payload);
+
       const { id } = req.params;
       this._service.editNoteById(id, req.payload);
 
