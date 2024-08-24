@@ -1,5 +1,7 @@
 'use strict';
 
+const ClientError = require('../../exceptions/ClientError');
+
 class NotesHandler {
   constructor(service, validator) {
     this._service = service;
@@ -30,12 +32,26 @@ class NotesHandler {
 
       return res;
     } catch (err) {
+      if (err instanceof ClientError) {
+        const res = h.response({
+          status: 'fail',
+          message: err.message
+        });
+
+        res.code(err.statusCode);
+
+        return res;
+      }
+
       const res = h.response({
-        status: 'fail',
-        message: err.message
+        status: 'error',
+        message: 'Sorry, there\'s an error in our server'
       });
 
-      res.code(400);
+      res.code(500);
+
+      // eslint-disable-next-line no-console
+      console.error(err);
 
       return res;
     }
@@ -60,12 +76,26 @@ class NotesHandler {
         data: { note }
       });
     } catch (err) {
+      if (err instanceof ClientError) {
+        const res = h.response({
+          status: 'fail',
+          message: err.message
+        });
+
+        res.code(err.statusCode);
+
+        return res;
+      }
+
       const res = h.response({
-        status: 'fail',
-        message: err.message
+        status: 'error',
+        message: 'Sorry, there\'s an error in our server'
       });
 
-      res.code(404);
+      res.code(500);
+
+      // eslint-disable-next-line no-console
+      console.error(err);
 
       return res;
     }
@@ -83,12 +113,26 @@ class NotesHandler {
         message: 'Note successfully updated'
       };
     } catch (err) {
+      if (err instanceof ClientError) {
+        const res = h.response({
+          status: 'fail',
+          message: err.message
+        });
+
+        res.code(err.statusCode);
+
+        return res;
+      }
+
       const res = h.response({
-        status: 'fail',
-        message: err.message
+        status: 'error',
+        message: 'Sorry, there\'s an error in our server'
       });
 
-      res.code(404);
+      res.code(500);
+
+      // eslint-disable-next-line no-console
+      console.error(err);
 
       return res;
     }
@@ -105,12 +149,26 @@ class NotesHandler {
         message: 'Note successfully deleted'
       };
     } catch (err) {
+      if (err instanceof ClientError) {
+        const res = h.response({
+          status: 'fail',
+          message: err.message
+        });
+
+        res.code(err.statusCode);
+
+        return res;
+      }
+
       const res = h.response({
-        status: 'fail',
-        message: err.message
+        status: 'error',
+        message: 'Sorry, there\'s an error in our server'
       });
 
-      res.code(404);
+      res.code(500);
+
+      // eslint-disable-next-line no-console
+      console.error(err);
 
       return res;
     }
