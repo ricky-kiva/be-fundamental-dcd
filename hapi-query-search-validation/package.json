@@ -10,7 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@hapi/hapi": "^21.3.2"
+    "@hapi/hapi": "^21.3.2",
+    "joi": "^17.13.3"
   },
   "devDependencies": {
     "dotenv": "^16.4.5"
