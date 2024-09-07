@@ -1,1 +1,4 @@
 /node_modules
+dcd-be-notes-server-key.pem
+.env
+.prod.env
