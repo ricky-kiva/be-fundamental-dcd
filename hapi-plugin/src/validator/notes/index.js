@@ -1,14 +1,14 @@
 'use strict';
 
 const { NotePayloadSchema } = require('./schema');
-const InvariantEroror = require('../../exceptions/InvariantError');
+const InvariantError = require('../../exceptions/InvariantError');
 
 const NotesValidator = {
   validateNotePayload: (payload) => {
     const validationResult = NotePayloadSchema.validate(payload);
 
     if (validationResult.error) {
-      throw new InvariantEroror(validationResult.error.message);
+      throw new InvariantError(validationResult.error.message);
     }
   }
 };
