@@ -47,7 +47,7 @@ class NotesService {
     const result = await this._pool.query(query);
 
     if (!result.rows.length) {
-      throw NotFoundError('Note not found');
+      throw new NotFoundError('Note not found');
     }
 
     return result.rows
