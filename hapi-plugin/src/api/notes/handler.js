@@ -1,5 +1,7 @@
 'use strict';
 
+const ClientError = require('../../exceptions/ClientError');
+
 class NotesHandler {
   constructor(service, validator) {
     this._service = service;
@@ -13,25 +15,57 @@ class NotesHandler {
   }
 
   async postNoteHandler(req, h) {
-    this._validator.validateNotePayload(req.payload);
+    try {
+      this._validator.validateNotePayload(req.payload);
 
-    const { title = 'untitled', body, tags } = req.payload;
+      const { title = 'untitled', body, tags } = req.payload;
+      const { id: credentialId } = req.auth.credentials;
 
-    const noteId = await this._service.addNote({ title, body, tags });
+      const noteId = await this._service.addNote({
+        title,
+        body,
+        tags,
+        owner: credentialId
+      });
 
-    const res = h.response({
-      status: 'success',
-      message: 'Note successfully added!',
-      data: { noteId }
-    });
+      const res = h.response({
+        status: 'success',
+        message: 'Note successfully added!',
+        data: { noteId }
+      });
 
-    res.code(201);
+      res.code(201);
 
-    return res;
+      return res;
+    } catch (e) {
+      if (e instanceof ClientError) {
+        const res = h.response({
+          status: 'fail',
+          message: e.message
+        });
+
+        res.code(e.statusCode);
+        return res;
+      }
+
+      const res = h.response({
+        status: 'error',
+        message: "There's an error in our server"
+      });
+
+      res.code(500);
+
+      // eslint-disable-next-line no-console
+      console.error(e);
+
+      return res;
+    }
   }
 
-  async getNotesHandler() {
-    const notes = await this._service.getNotes();
+  async getNotesHandler(req) {
+    const { id: credentialId } = req.auth.credentials;
+
+    const notes = await this._service.getNotes(credentialId);
 
     return {
       status: 'success',
@@ -40,36 +74,120 @@ class NotesHandler {
   }
 
   async getNoteByIdHandler(req, h) {
-    const { id } = req.params;
-    const note = await this._service.getNoteById(id);
+    try {
+      const { id } = req.params;
+      const { id: credentialId } = req.auth.credentials;
 
-    return h.response({
-      status: 'success',
-      data: { note }
-    });
+      await this._service.verifyNoteOwner(id, credentialId);
+
+      const note = await this._service.getNoteById(id);
+
+      return h.response({
+        status: 'success',
+        data: { note }
+      });
+    } catch (e) {
+      if (e instanceof ClientError) {
+        const res = h.response({
+          status: 'fail',
+          message: e.message
+        });
+
+        res.code(e.statusCode);
+
+        return res;
+      }
+
+      const res = h.response({
+        status: 'error',
+        message: "There's an error in our server"
+      });
+
+      res.code(500);
+
+      // eslint-disable-next-line no-console
+      console.error(e);
+
+      return res;
+    }
   }
 
-  async putNoteByIdHandler(req) {
-    this._validator.validateNotePayload(req.payload);
+  async putNoteByIdHandler(req, h) {
+    try {
+      this._validator.validateNotePayload(req.payload);
 
-    const { id } = req.params;
-    await this._service.editNoteById(id, req.payload);
+      const { id } = req.params;
+      const { id: credentialId } = req.auth.credentials;
 
-    return {
-      status: 'success',
-      message: 'Note successfully updated'
-    };
+      await this._service.verifyNoteOwner(id, credentialId);
+      await this._service.editNoteById(id, req.payload);
+
+      return {
+        status: 'success',
+        message: 'Note successfully updated'
+      };
+    } catch (e) {
+      if (e instanceof ClientError) {
+        const res = h.response({
+          status: 'fail',
+          message: e.message
+        });
+
+        res.code(e.statusCode);
+
+        return res;
+      }
+
+      const res = h.response({
+        status: 'error',
+        message: "There's an error in our server"
+      });
+
+      res.code(500);
+
+      // eslint-disable-next-line no-console
+      console.error(e);
+
+      return res;
+    }
   }
 
-  async deleteNoteByIdHandler(req) {
-    const { id } = req.params;
+  async deleteNoteByIdHandler(req, h) {
+    try {
+      const { id } = req.params;
+      const { id: credentialId } = req.auth.credentials;
 
-    await this._service.deleteNoteById(id);
+      await this._service.verifyNoteOwner(id, credentialId);
+      await this._service.deleteNoteById(id);
 
-    return {
-      status: 'success',
-      message: 'Note successfully deleted'
-    };
+      return {
+        status: 'success',
+        message: 'Note successfully deleted'
+      };
+    } catch (e) {
+      if (e instanceof ClientError) {
+        const res = h.response({
+          status: 'fail',
+          message: e.message
+        });
+
+        res.code(e.statusCode);
+
+        return res;
+      }
+
+      const res = h.response({
+        status: 'error',
+        message: "There's an error in our server"
+      });
+
+      res.code(500);
+
+      // eslint-disable-next-line no-console
+      console.error(e);
+
+      return res;
+    }
   }
 }
 
