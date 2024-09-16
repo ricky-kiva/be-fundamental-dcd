@@ -48,11 +48,23 @@ const init = async () => {
     return h.continue;
   });
 
-  await server.register([
-    {
-      plugin: Jwt
-    }
-  ]);
+  await server.register({ plugin: Jwt });
+
+  server.auth.strategy('notes_app_jwt', 'jwt', {
+    keys: process.env.ACCESS_TOKEN_KEY,
+    verify: { // basic token verification
+      aud: false,
+      iss: false,
+      sub: false,
+      maxAgeSec: process.env.ACCESS_TOKEN_AGE
+    },
+    validate: (artifacts) => ({ // add custom logic for validation
+      isValid: true,
+      credentials: { // to pass data on the route handler
+        id: artifacts.decoded.payload.id
+      }
+    })
+  });
 
   await server.register([
     {
