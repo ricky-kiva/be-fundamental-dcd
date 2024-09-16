@@ -58,8 +58,6 @@ class UsersService {
     if (result.rows.length > 0) {
       throw new InvariantError('Failed to add user. Username is used');
     }
-
-    return result.rows[0];
   }
 
   async verifyUserCredential(username, password) {
