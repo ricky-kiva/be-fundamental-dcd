@@ -3,6 +3,7 @@
 require('dotenv').config();
 
 const Hapi = require('@hapi/hapi');
+const Jwt = require('@hapi/jwt');
 const notes = require('./api/notes');
 const NotesService = require('./services/postgres/NotesService');
 const NotesValidator = require('./validator/notes');
@@ -46,6 +47,12 @@ const init = async () => {
 
     return h.continue;
   });
+
+  await server.register([
+    {
+      plugin: Jwt
+    }
+  ]);
 
   await server.register([
     {
