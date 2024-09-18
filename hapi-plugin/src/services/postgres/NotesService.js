@@ -8,8 +8,9 @@ const NotFoundError = require('../../exceptions/NotFoundError');
 const AuthorizationError = require('../../exceptions/AuthorizationError');
 
 class NotesService {
-  constructor() {
+  constructor(collaborationService) {
     this._pool = new Pool();
+    this._collaborationService = collaborationService;
   }
 
   async addNote({
@@ -35,7 +36,12 @@ class NotesService {
 
   async getNotes(owner) {
     const q = {
-      text: 'SELECT * FROM notes WHERE owner = $1',
+      text: `
+        SELECT notes.* FROM notes
+        LEFT JOIN notes_collabs ON notes_collabs.note_id = notes.id
+        WHERE notes.owner = $1 OR notes_collabs.user_id = $1
+        GROUP BY notes.id
+      `,
       values: [owner]
     };
 
@@ -105,6 +111,20 @@ class NotesService {
 
     if (note.owner !== owner) {
       throw new AuthorizationError("You don't have the right to access this resource");
+    }
+  }
+
+  async verifyNoteAccess(noteId, userId) {
+    try {
+      await this.verifyNoteOwner(noteId, userId);
+    } catch (e) {
+      if (e instanceof NotFoundError) throw e;
+
+      try {
+        await this._collaborationService.verifyCollaborator(noteId, userId);
+      } catch (e2) {
+        throw e;
+      }
     }
   }
 }
