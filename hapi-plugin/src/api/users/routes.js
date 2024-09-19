@@ -1,14 +1,21 @@
 'use strict';
 
+const usersPath = '/users';
+
 const routes = (h) => [
   {
     method: 'POST',
-    path: '/users',
+    path: usersPath,
     handler: h.postUserHandler
   }, {
     method: 'GET',
-    path: '/users/{id}',
+    path: `${usersPath}/{id}`,
     handler: h.getUserByIdHandler
+  },
+  {
+    method: 'GET',
+    path: usersPath,
+    handler: h.getUsersByUsernameHandler
   }
 ];
 
