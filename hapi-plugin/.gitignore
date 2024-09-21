@@ -1,5 +1,6 @@
-node_modules
-postman
-dcd-be-notes-server-key.pem
 .env
 .prod.env
+dcd-be-notes-server-key.pem
+node_modules
+postman
+src/api/uploads/file/images
