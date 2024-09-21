@@ -1,7 +1,6 @@
 'use strict';
 
 const fs = require('fs');
-const { resolve } = require('path');
 
 class StorageService {
   constructor(folder) {
@@ -18,9 +17,11 @@ class StorageService {
 
     const fileStream = fs.createWriteStream(path);
 
-    return new Promise((_, reject) => {
+    return new Promise((resolve, reject) => {
       fileStream.on('error', (e) => reject(e));
+
       file.pipe(fileStream);
+
       file.on('end', () => resolve(filename));
     });
   }
