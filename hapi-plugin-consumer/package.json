@@ -11,5 +11,11 @@
     "rabbitmq"
   ],
   "author": "Rickyslash",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.10.4",
+    "dotenv": "^16.4.5",
+    "nodemailer": "^6.9.15",
+    "pg": "^8.13.0"
+  }
 }
