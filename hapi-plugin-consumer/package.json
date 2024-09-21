@@ -1,0 +1,15 @@
+{
+  "name": "hapi-plugin-consumer",
+  "version": "1.0.0",
+  "description": "Consumer for Hapi Plugin directory",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "hapi",
+    "rabbitmq"
+  ],
+  "author": "Rickyslash",
+  "license": "ISC"
+}
