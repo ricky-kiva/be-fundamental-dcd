@@ -16,7 +16,7 @@ class NotesService {
         GROUP BY notes.id
       `,
       values: [userId]
-    }
+    };
 
     const result = await this._pool.query(q);
 
